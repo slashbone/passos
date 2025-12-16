@@ -5,27 +5,6 @@
          https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     
-    <!-- 
-        CONFIGURAÇÃO BÁSICA DO PROJETO
-        - groupId: Identificador único da organização/empresa
-        - artifactId: Nome do projeto/aplicação
-        - version: Versão atual do projeto
-        - packaging: Tipo de empacotamento (jar para aplicações Spring Boot)
-    -->
-    <groupId>com.projeto</groupId>
-    <artifactId>steps-backend</artifactId>
-    <version>1.0.0</version>
-    <packaging>jar</packaging>
-    
-    <name>Steps Backend</name>
-    <description>Backend Spring Boot para o Projeto Steps V1 - Interface Web com mensagem de boas-vindas</description>
-    
-    <!-- 
-        SPRING BOOT PARENT
-        - Fornece configurações padrão e gerenciamento de dependências
-        - Define versões compatíveis de todas as bibliotecas Spring
-        - Inclui plugins Maven pré-configurados
-    -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -33,64 +12,29 @@
         <relativePath/>
     </parent>
     
-    <!-- 
-        PROPRIEDADES DO PROJETO
-        - java.version: Versão mínima do Java necessária
-        - maven.compiler: Configurações de compilação
-    -->
+    <groupId>com.projeto</groupId>
+    <artifactId>steps-backend</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    
+    <name>Steps Backend</name>
+    <description>Backend Spring Boot para o Projeto Steps V1</description>
+    
     <properties>
-        <java.version>17</java.version>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>21</java.version>
     </properties>
     
     <dependencies>
-        <!-- 
-            SPRING BOOT WEB STARTER
-            - Inclui Spring MVC para criar APIs REST
-            - Servidor Tomcat embarcado para executar a aplicação
-            - Validação de dados e serialização JSON automática
-            - Permite criar controllers para responder a requisições HTTP
-        -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         
-        <!-- 
-            SPRING BOOT ACTUATOR
-            - Fornece endpoints para monitoramento da aplicação
-            - Endpoints como /health, /info, /metrics
-            - Permite verificar se a aplicação está funcionando
-            - Útil para deployment e monitoramento em produção
-        -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         
-        <!-- 
-            SPRING BOOT DEVTOOLS (APENAS EM DESENVOLVIMENTO)
-            - Reinicialização automática quando código é alterado
-            - LiveReload para atualizar browser automaticamente
-            - Configurações otimizadas para desenvolvimento
-            - NÃO incluído no JAR final de produção
-        -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>
-        
-        <!-- 
-            SPRING BOOT TEST STARTER (APENAS PARA TESTES)
-            - JUnit 5 para testes unitários
-            - Spring Test para testes de integração
-            - Mockito para criar mocks em testes
-            - TestContainers e outras ferramentas de teste
-        -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -100,41 +44,9 @@
     
     <build>
         <plugins>
-            <!-- 
-                SPRING BOOT MAVEN PLUGIN
-                - Permite executar a aplicação com 'mvn spring-boot:run'
-                - Cria JAR executável com 'mvn package'
-                - Inclui todas as dependências no JAR final
-                - Configura o ponto de entrada da aplicação
-            -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <!-- 
-                        CONFIGURAÇÕES DO PLUGIN
-                        - excludeDevtools: Remove devtools do JAR de produção
-                        - executable: Torna o JAR executável diretamente no Linux
-                    -->
-                    <excludeDevtools>false</excludeDevtools>
-                </configuration>
-            </plugin>
-            
-            <!-- 
-                MAVEN COMPILER PLUGIN
-                - Configura a versão do Java para compilação
-                - Define encoding dos arquivos fonte
-                - Otimizações de compilação
-            -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
-                <configuration>
-                    <source>17</source>
-                    <target>17</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
             </plugin>
         </plugins>
     </build>
