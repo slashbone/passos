@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steps V1.4 - Sistema CRUD com SQL Server</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- 🎯 CABEÇALHO DA APLICAÇÃO -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-database"></i>
+                    <h1>Steps V1.4</h1>
+                    <span class="version">SQL Server Edition</span>
+                </div>
+                <div class="connection-status" id="connectionStatus">
+                    <i class="fas fa-circle"></i>
+                    <span>Verificando conexão...</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 📊 PAINEL DE ESTATÍSTICAS -->
+    <section class="stats-panel">
+        <div class="container">
+            <div class="stats-grid" id="statsGrid">
+                <!-- Estatísticas serão inseridas aqui via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 🎮 ÁREA PRINCIPAL DE CONTEÚDO -->
+    <main class="main-content">
+        <div class="container">
+            
+            <!-- 📋 SEÇÃO DE CADASTRO -->
+            <section class="form-section">
+                <div class="form-card">
+                    <div class="form-header">
+                        <h2><i class="fas fa-user-plus"></i> Cadastrar Novo Usuário</h2>
+                        <p>Adicione um novo usuário ao sistema SQL Server</p>
+                    </div>
+                    
+                    <form id="usuarioForm" class="usuario-form">
+                        <div class="form-group">
+                            <label for="nome">
+                                <i class="fas fa-user"></i>
+                                Nome Completo *
+                            </label>
+                            <input type="text" id="nome" name="nome" required 
+                                   placeholder="Digite o nome completo do usuário">
+                            <span class="error-message" id="nomeError"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="dataNascimento">
+                                <i class="fas fa-calendar-alt"></i>
+                                Data de Nascimento *
+                            </label>
+                            <input type="date" id="dataNascimento" name="dataNascimento" required>
+                            <span class="error-message" id="dataError"></span>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="submitBtn">
+                                <i class="fas fa-save"></i>
+                                <span>Cadastrar Usuário</span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="limparBtn">
+                                <i class="fas fa-eraser"></i>
+                                Limpar Campos
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- 🔍 SEÇÃO DE BUSCA -->
+            <section class="search-section">
+                <div class="search-card">
+                    <div class="search-header">
+                        <h2><i class="fas fa-search"></i> Buscar Usuários</h2>
+                    </div>
+                    
+                    <div class="search-controls">
+                        <div class="search-group">
+                            <input type="text" id="searchInput" placeholder="Digite o nome para buscar...">
+                            <button class="btn btn-search" id="searchBtn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="search-buttons">
+                            <button class="btn btn-info" id="listarTodosBtn">
+                                <i class="fas fa-list"></i>
+                                Listar Todos
+                            </button>
+                            <button class="btn btn-warning" id="aniversariantesBtn">
+                                <i class="fas fa-birthday-cake"></i>
+                                Aniversariantes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 📊 SEÇÃO DE RESULTADOS -->
+            <section class="results-section">
+                <div class="results-card">
+                    <div class="results-header">
+                        <h2><i class="fas fa-users"></i> Usuários Encontrados</h2>
+                        <span class="results-count" id="resultsCount">0 usuários</span>
+                    </div>
+                    
+                    <!-- Lista de Usuários -->
+                    <div class="usuarios-list" id="usuariosList">
+                        <!-- Usuários serão inseridos aqui via JavaScript -->
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 🎯 MODAL DE EDIÇÃO -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Editar Usuário</h3>
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="editForm" class="edit-form">
+                <input type="hidden" id="editId">
+                
+                <div class="form-group">
+                    <label for="editNome">
+                        <i class="fas fa-user"></i>
+                        Nome Completo *
+                    </label>
+                    <input type="text" id="editNome" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editDataNascimento">
+                        <i class="fas fa-calendar-alt"></i>
+                        Data de Nascimento *
+                    </label>
+                    <input type="date" id="editDataNascimento" required>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Salvar Alterações
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="cancelEdit">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 🔄 LOADING OVERLAY -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Processando...</p>
+        </div>
+    </div>
+
+    <!-- 📢 ÁREA DE NOTIFICAÇÕES -->
+    <div id="notifications" class="notifications">
+        <!-- Notificações serão inseridas aqui via JavaScript -->
+    </div>
+
+    <!-- 📄 RODAPÉ -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p><i class="fas fa-database"></i> Steps V1.4 - Sistema CRUD com SQL Server</p>
+                    <p><i class="fas fa-server"></i> Rodando no Podman | <i class="fas fa-code"></i> Spring Boot + JPA</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#" id="refreshStats">
+                        <i class="fas fa-sync-alt"></i>
+                        Atualizar Dados
+                    </a>
+                    <a href="/actuator/health" target="_blank">
+                        <i class="fas fa-heartbeat"></i>
+                        Health Check
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 📜 SCRIPTS -->
+    <script src="script.js"></script>
+</body>
+</html>
