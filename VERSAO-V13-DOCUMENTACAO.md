@@ -56,7 +56,22 @@ MongoDB Server (Instância do MongoDB)
 
 **Podman** é uma ferramenta para executar containers (como o Docker, mas sem daemon). Containers são como "caixas isoladas" que contêm tudo que um software precisa para rodar.
 
-### Passo 1: Verificar se Podman está instalado
+### 🚀 MÉTODO RÁPIDO: Script Automático
+
+**A maneira mais fácil de instalar o MongoDB é usando o script automático:**
+
+```powershell
+# Execute no diretório raiz do projeto
+.\deploy-mongodb.bat
+```
+
+Este script faz todo o processo automaticamente! Pule para a seção "Verificar se MongoDB está rodando" após executar o script.
+
+### 📖 MÉTODO MANUAL: Passo a Passo
+
+Se preferir entender cada etapa ou fazer manualmente:
+
+#### Passo 1: Verificar se Podman está instalado
 
 Abra o PowerShell e execute:
 
@@ -73,30 +88,88 @@ podman version 4.x.x
 - Windows: https://podman.io/getting-started/installation#windows
 - Execute o instalador e reinicie o computador
 
-### Passo 2: Criar e executar container MongoDB
+#### Passo 2: Criar e executar container MongoDB
 
 Execute o seguinte comando no PowerShell:
 
 ```powershell
 podman run -d `
   --name mongodb-steps `
-  -p 27017:27017 `
-  -e MONGO_INITDB_DATABASE=passos `
-  -v mongodb-data:/data/db `
-  mongo:latest
+  --publish 27017:27017 `
+  --env MONGO_INITDB_DATABASE=passos `
+  --volume mongodb-data:/data/db `
+  --restart=unless-stopped `
+  docker.io/library/mongo:6
 ```
 
-#### 📝 Explicação de cada parte do comando:
+#### 📝 Explicação detalhada de cada argumento do comando Podman:
 
-| Parâmetro | O que faz |
-|-----------|-----------|
-| `podman run` | Comando para criar e executar um container |
-| `-d` | **Detached mode** - Executa em segundo plano (não trava o terminal) |
-| `--name mongodb-steps` | Dá um nome ao container (mongodb-steps) para fácil identificação |
-| `-p 27017:27017` | **Port mapping** - Mapeia porta 27017 do container para porta 27017 do seu computador |
-| `-e MONGO_INITDB_DATABASE=passos` | **Environment variable** - Cria automaticamente o banco "passos" |
-| `-v mongodb-data:/data/db` | **Volume** - Cria armazenamento persistente para os dados (não perde dados ao reiniciar) |
-| `mongo:latest` | Imagem do MongoDB a ser baixada e executada (versão mais recente) |
+| Argumento | Descrição Completa |
+|-----------|-------------------|
+| `podman run` | **Comando base**: Cria e executa um novo container. Equivale ao "docker run" mas sem daemon |
+| `-d` ou `--detach` | **Modo desanexado**: Executa o container em segundo plano. O terminal não fica "preso" ao container |
+| `--name mongodb-steps` | **Nome do container**: Define um nome amigável em vez de usar um ID aleatório. Facilita gerenciamento |
+| `--publish 27017:27017` | **Mapeamento de porta**: `host:container`. Mapeia porta 27017 do computador para porta 27017 do container |
+| `--env MONGO_INITDB_DATABASE=passos` | **Variável de ambiente**: Instrui o MongoDB a criar automaticamente o banco "passos" na inicialização |
+| `--volume mongodb-data:/data/db` | **Volume nomeado**: Cria armazenamento persistente. `mongodb-data` é o nome do volume, `/data/db` é onde MongoDB salva dados |
+| `--restart=unless-stopped` | **Política de restart**: Container reinicia automaticamente se parar (exceto se você manualmente pará-lo) |
+| `docker.io/library/mongo:6` | **Imagem**: Especifica a imagem Docker Hub oficial do MongoDB versão 6 a ser executada |
+
+### 🤖 SCRIPT AUTOMÁTICO DE DEPLOY
+
+O projeto inclui um script batch `deploy-mongodb.bat` que automatiza completamente o processo de instalação e configuração do MongoDB.
+
+#### 📋 O que o script faz:
+
+1. **Verificação de Pré-requisitos**:
+   - Verifica se Podman está instalado
+   - Exibe versão e localização
+
+2. **Limpeza de Ambiente**:
+   - Verifica se já existe container com mesmo nome
+   - Para e remove container conflitante (se existir)
+   - Libera porta 27017 se estiver ocupada
+
+3. **Preparação da Imagem**:
+   - Baixa imagem MongoDB se necessário
+   - Usa imagem local se disponível
+   - Verifica integridade da imagem
+
+4. **Criação do Container**:
+   - Executa comando Podman otimizado
+   - Configura volumes persistentes
+   - Define políticas de restart automático
+
+5. **Validação e Testes**:
+   - Verifica se container está rodando
+   - Testa conexão com MongoDB
+   - Valida criação do banco "passos"
+
+6. **Relatório Final**:
+   - Exibe informações de conexão
+   - Lista comandos úteis para gerenciamento
+   - Mostra próximos passos
+
+#### 🔧 Argumentos Detalhados do Script:
+
+O script usa as seguintes variáveis configuráveis:
+
+```batch
+set CONTAINER_NAME=mongodb-steps          # Nome do container
+set MONGODB_PORT=27017                    # Porta de conexão
+set DATABASE_NAME=passos                  # Nome do banco de dados
+set VOLUME_NAME=mongodb-data              # Nome do volume persistente
+set MONGODB_IMAGE=docker.io/library/mongo:6  # Imagem MongoDB a usar
+```
+
+#### 💡 Vantagens do Script Automático:
+
+- ✅ **Verificações automáticas**: Valida pré-requisitos antes de executar
+- ✅ **Limpeza inteligente**: Remove configurações conflitantes
+- ✅ **Logs detalhados**: Informa cada etapa do processo
+- ✅ **Tratamento de erros**: Para execução se encontrar problemas
+- ✅ **Testes de validação**: Confirma que tudo está funcionando
+- ✅ **Informações úteis**: Exibe comandos e configurações importantes
 
 ### Passo 3: Verificar se MongoDB está rodando
 
@@ -150,6 +223,66 @@ db.dados_usuario.countDocuments()
 exit
 ```
 
+### 🎯 USANDO O SCRIPT DE DEPLOY
+
+#### Execução Básica:
+
+```powershell
+# Navegue até o diretório do projeto
+cd "C:\Users\SeuUsuario\Downloads\projeto-steps-V1"
+
+# Execute o script
+.\deploy-mongodb.bat
+```
+
+#### Saída Esperada do Script:
+
+```
+============================================================================
+                    DEPLOY MONGODB - PROJETO STEPS V1.3
+============================================================================
+
+[STEP 1/6] Verificando se Podman esta instalado...
+[OK] Podman encontrado e funcionando!
+
+[STEP 2/6] Verificando se ja existe container MongoDB...
+[OK] Nenhum container conflitante encontrado.
+
+[STEP 3/6] Verificando se porta 27017 esta disponivel...
+[OK] Porta 27017 disponivel para uso.
+
+[STEP 4/6] Baixando imagem MongoDB (se necessario)...
+[OK] Imagem MongoDB baixada com sucesso!
+
+[STEP 5/6] Criando e iniciando container MongoDB...
+[OK] Container MongoDB criado e iniciado com sucesso!
+
+[STEP 6/6] Validando funcionamento do MongoDB...
+[OK] Container esta rodando!
+[OK] Conexao com MongoDB validada!
+
+============================================================================
+                            DEPLOY CONCLUIDO!
+============================================================================
+```
+
+#### 🔍 Detalhes Técnicos do Script:
+
+**Verificações de Segurança:**
+- Valida se Podman está instalado antes de prosseguir
+- Verifica conflitos de porta e resolve automaticamente
+- Remove containers duplicados para evitar erros
+
+**Otimizações de Performance:**
+- Usa volume nomeado para persistência rápida
+- Aplica política de restart automático
+- Configura buffers otimizados para MongoDB
+
+**Monitoramento Integrado:**
+- Testa conectividade após criação
+- Valida integridade do banco de dados
+- Exibe logs em caso de problemas
+
 ### Passo 5: Comandos úteis do Podman
 
 ```powershell
@@ -173,6 +306,9 @@ podman rm -f mongodb-steps
 
 # Ver uso de recursos do container
 podman stats mongodb-steps
+
+# Re-executar o script (reinstala completamente)
+.\deploy-mongodb.bat
 ```
 
 ---
@@ -594,7 +730,16 @@ http://localhost:8080/demo-v13.html
 
 ### Passo a Passo Completo
 
-#### 1. Iniciar MongoDB (se não estiver rodando)
+#### 1. Iniciar MongoDB usando o Script Automático ⚡
+
+**RECOMENDADO** - Use o script automático:
+
+```powershell
+# Execute o script de deploy
+.\deploy-mongodb.bat
+```
+
+**Ou manualmente** (se preferir):
 
 ```powershell
 # Verificar se está rodando
@@ -604,7 +749,7 @@ podman ps
 podman start mongodb-steps
 
 # Ou crie um novo container:
-podman run -d --name mongodb-steps -p 27017:27017 -e MONGO_INITDB_DATABASE=passos -v mongodb-data:/data/db mongo:latest
+podman run -d --name mongodb-steps --publish 27017:27017 --env MONGO_INITDB_DATABASE=passos --volume mongodb-data:/data/db --restart=unless-stopped docker.io/library/mongo:6
 ```
 
 #### 2. Compilar o projeto
@@ -1009,7 +1154,51 @@ Verificar se o controller tem `@CrossOrigin`:
 public class WelcomeControllerV13 {
 ```
 
-### Problema 6: Backend não inicia
+### Problema 6: Script de deploy falha
+
+**Erro no script:**
+```
+[ERROR] Podman nao encontrado!
+```
+
+**Soluções:**
+
+1. Instalar Podman:
+   - Baixe em: https://podman.io/getting-started/installation#windows
+   - Reinicie o computador após instalação
+   - Execute novamente: `.\deploy-mongodb.bat`
+
+**Erro de rede:**
+```
+[ERROR] Falha ao baixar imagem MongoDB!
+```
+
+**Soluções:**
+
+1. Verificar conexão com internet
+2. Usar imagem local se disponível:
+   ```powershell
+   # Ver imagens locais
+   podman images mongo
+   
+   # Se existir, edite o script e altere:
+   # set MONGODB_IMAGE=mongo:6 (ou versão disponível)
+   ```
+
+**Erro de porta ocupada:**
+```
+[WARN] Porta 27017 esta em uso
+```
+
+**Solução automática:** O script resolve automaticamente, mas você pode verificar:
+```powershell
+# Ver o que está usando a porta
+netstat -ano | findstr :27017
+
+# O script mata processos conflitantes automaticamente
+```
+
+### Problema 7: Backend não inicia
 
 **Erro:**
 ```
@@ -1030,6 +1219,35 @@ taskkill /PID 1234 /F
 2. Ou mudar a porta no `application.properties`:
 ```properties
 server.port=8081
+```
+
+### Problema 8: Script executa mas MongoDB não responde
+
+**Sintomas:**
+- Script completa com sucesso
+- Container aparece rodando (`podman ps`)
+- Mas aplicação não conecta
+
+**Soluções:**
+
+1. Verificar logs detalhados:
+```powershell
+podman logs mongodb-steps --tail 50
+```
+
+2. Testar conexão manualmente:
+```powershell
+podman exec -it mongodb-steps mongosh --eval "db.runCommand({ping: 1})"
+```
+
+3. Reiniciar container:
+```powershell
+podman restart mongodb-steps
+```
+
+4. Re-executar script (remove e recria tudo):
+```powershell
+.\deploy-mongodb.bat
 ```
 
 ---
@@ -1211,19 +1429,27 @@ Configure SSL/TLS no Spring Boot.
 ### Comandos Rápidos de Referência:
 
 ```powershell
-# MONGODB
+# DEPLOY AUTOMÁTICO
+.\deploy-mongodb.bat                # Deploy completo MongoDB
+
+# GERENCIAMENTO MONGODB
 podman start mongodb-steps          # Iniciar
 podman stop mongodb-steps           # Parar
+podman restart mongodb-steps        # Reiniciar
 podman logs mongodb-steps           # Ver logs
-podman exec -it mongodb-steps mongosh  # Abrir shell
+podman logs -f mongodb-steps        # Ver logs em tempo real
+podman exec -it mongodb-steps mongosh  # Abrir shell MongoDB
+podman stats mongodb-steps          # Ver uso de recursos
 
 # SPRING BOOT
 mvn clean package                   # Compilar
 mvn spring-boot:run                 # Executar
 java -jar target/steps-backend-1.3.0.jar  # Executar JAR
 
-# TESTES
+# TESTES RÁPIDOS
 curl http://localhost:8080/api/v1.3/   # Testar API
+# Ou no navegador:
+# http://localhost:8080/demo-v13.html
 ```
 
 ---
