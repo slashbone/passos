@@ -1,0 +1,79 @@
+# ========================================
+# GITIGNORE PARA PROJETO SPRING BOOT
+# ========================================
+
+# Arquivos compilados Java
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+
+# Diretórios de build Maven
+backend/target/
+backend/target/**
+**/target/
+
+# Logs
+*.log
+logs/
+backend/logs/
+
+# IDEs e Editores
+.vscode/
+.idea/
+*.iws
+*.iml
+*.ipr
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+
+# Sistema Operacional
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Spring Boot específico
+backend/HELP.md
+backend/.mvn/wrapper/maven-wrapper.jar
+backend/.mvn/wrapper/maven-wrapper.properties
+
+# Aplicação específica
+backend/src/main/resources/application-local.properties
+backend/src/main/resources/application-dev.properties
+backend/src/main/resources/application-prod.properties
+
+# Node.js (caso use futuramente)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Arquivos temporários Windows
+*.tmp
+*.temp
+
+# Arquivos de compilação antigos
+InterfaceApp.java
+WebServer.java
+executar.bat
+executar-web.bat
+demo.html
+package.json

@@ -1,0 +1,383 @@
+/* 
+   ESTILOS CSS PARA INTERFACE WEB SPRING BOOT
+   
+   EXPLICAÇÃO PARA INICIANTES:
+   
+   CSS (Cascading Style Sheets) é a linguagem que define como nossa página HTML
+   será exibida visualmente. Cada regra CSS define a aparência de elementos HTML.
+   
+   ESTRUTURA BÁSICA:
+   - Seletor: Define qual elemento HTML será estilizado (.classe, #id, elemento)
+   - Propriedade: Qual aspecto será modificado (color, font-size, etc.)
+   - Valor: Como será modificado (red, 16px, etc.)
+   
+   EXEMPLO: .button { color: red; } 
+   - .button: Seletor (elementos com class="button")
+   - color: Propriedade (cor do texto) 
+   - red: Valor (vermelho)
+*/
+
+/* ========================================
+   RESET E CONFIGURAÇÕES BÁSICAS
+   ======================================== */
+
+/* 
+   RESET CSS: Remove margens e paddings padrão do navegador
+   Garante que a página tenha aparência consistente em diferentes navegadores
+*/
+* {
+    margin: 0;               /* Remove margem externa de todos os elementos */
+    padding: 0;              /* Remove espaçamento interno de todos os elementos */
+    box-sizing: border-box;  /* Inclui padding e border no cálculo da largura */
+}
+
+/* 
+   ESTILO DO CORPO DA PÁGINA
+   Define aparência geral da página inteira
+*/
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fonte moderna e legível */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Gradiente azul-roxo */
+    min-height: 100vh;       /* Altura mínima = altura da tela */
+    display: flex;           /* Layout flexível */
+    align-items: center;     /* Centraliza verticalmente */
+    justify-content: center; /* Centraliza horizontalmente */
+    color: #333;            /* Cor do texto padrão */
+}
+
+/* ========================================
+   CONTAINER PRINCIPAL
+   ======================================== */
+
+/* 
+   CARTÃO/CARD CENTRAL DA INTERFACE
+   Cria um "cartão" branco semi-transparente no centro da tela
+*/
+.container {
+    background: rgba(255, 255, 255, 0.95); /* Fundo branco com 95% opacidade */
+    border-radius: 20px;                    /* Bordas arredondadas */
+    padding: 40px;                          /* Espaçamento interno */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); /* Sombra para profundidade */
+    text-align: center;                     /* Centraliza texto */
+    min-width: 350px;                       /* Largura mínima */
+    max-width: 500px;                       /* Largura máxima */
+    backdrop-filter: blur(10px);            /* Efeito de desfoque no fundo */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Borda sutil */
+}
+
+/* ========================================
+   CABEÇALHO E TÍTULOS
+   ======================================== */
+
+/* 
+   TÍTULO PRINCIPAL "BEM-VINDO"
+*/
+.welcome-title {
+    font-size: 2.2rem;                     /* Tamanho grande da fonte */
+    font-weight: bold;                      /* Texto em negrito */
+    color: #0066cc;                        /* Cor azul */
+    margin-bottom: 10px;                   /* Espaçamento inferior */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Sombra no texto */
+    animation: fadeInDown 0.8s ease-out;   /* Animação de entrada */
+}
+
+/* 
+   SUBTÍTULO INFORMATIVO
+*/
+.subtitle {
+    font-size: 0.9rem;                     /* Fonte menor */
+    color: #666;                           /* Cor cinza */
+    margin-bottom: 30px;                   /* Espaçamento inferior */
+    font-style: italic;                    /* Texto em itálico */
+}
+
+/* ========================================
+   ÁREA DE CONTEÚDO PRINCIPAL
+   ======================================== */
+
+/* 
+   CONTAINER DO CONTEÚDO PRINCIPAL
+   Define layout da área com botão e mensagem
+*/
+.main-content {
+    margin: 30px 0;                        /* Margem superior e inferior */
+    min-height: 140px;                     /* Altura mínima para estabilidade */
+    display: flex;                         /* Layout flexível */
+    flex-direction: column;                /* Organiza elementos verticalmente */
+    align-items: center;                   /* Centraliza horizontalmente */
+    justify-content: center;               /* Centraliza verticalmente */
+    gap: 20px;                            /* Espaçamento entre elementos */
+}
+
+/* ========================================
+   BOTÃO PRINCIPAL
+   ======================================== */
+
+/* 
+   BOTÃO "CLIQUE AQUI"
+   Botão principal que faz chamada para API
+*/
+.action-button {
+    background: linear-gradient(45deg, #4682b4, #5a9fd4); /* Gradiente azul */
+    color: white;                          /* Texto branco */
+    border: none;                          /* Remove borda padrão */
+    padding: 15px 30px;                    /* Espaçamento interno */
+    font-size: 1.1rem;                     /* Tamanho da fonte */
+    font-weight: 600;                      /* Peso da fonte (semi-negrito) */
+    border-radius: 25px;                   /* Bordas bem arredondadas */
+    cursor: pointer;                       /* Cursor de "mão" ao passar sobre */
+    transition: all 0.3s ease;            /* Transição suave para animações */
+    box-shadow: 0 4px 15px rgba(70, 130, 180, 0.3); /* Sombra azul */
+    text-transform: uppercase;             /* Texto em maiúsculas */
+    letter-spacing: 1px;                   /* Espaçamento entre letras */
+    position: relative;                    /* Para efeitos de posicionamento */
+    overflow: hidden;                      /* Oculta elementos que saem da área */
+}
+
+/* 
+   EFEITO HOVER (ao passar mouse sobre o botão)
+*/
+.action-button:hover {
+    transform: translateY(-2px);           /* Move botão 2px para cima */
+    box-shadow: 0 6px 20px rgba(70, 130, 180, 0.4); /* Sombra mais intensa */
+    background: linear-gradient(45deg, #5a9fd4, #4682b4); /* Inverte gradiente */
+}
+
+/* 
+   EFEITO ACTIVE (quando botão é pressionado)
+*/
+.action-button:active {
+    transform: translateY(0);              /* Volta à posição original */
+    box-shadow: 0 2px 10px rgba(70, 130, 180, 0.3); /* Sombra mais suave */
+}
+
+/* 
+   ESTADO DESABILITADO DO BOTÃO
+*/
+.action-button:disabled {
+    opacity: 0.6;                          /* Fica meio transparente */
+    cursor: not-allowed;                   /* Cursor de "proibido" */
+    transform: none;                       /* Remove transformações */
+}
+
+/* ========================================
+   MENSAGEM DE RESPOSTA
+   ======================================== */
+
+/* 
+   ÁREA DA MENSAGEM "OBRIGADO"
+   Exibe a resposta da API
+*/
+.thank-message {
+    font-size: 1.3rem;                     /* Fonte média-grande */
+    font-style: italic;                    /* Texto em itálico */
+    color: #228b22;                        /* Verde */
+    font-weight: 600;                      /* Semi-negrito */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    transition: all 0.5s ease;            /* Transição suave */
+    min-height: 30px;                     /* Altura mínima para estabilidade */
+    display: flex;                        /* Layout flexível */
+    align-items: center;                  /* Centraliza verticalmente */
+    justify-content: center;              /* Centraliza horizontalmente */
+}
+
+/* 
+   ESTADO OCULTO DA MENSAGEM
+*/
+.thank-message.hidden {
+    opacity: 0;                           /* Invisível */
+    transform: scale(0.8);                /* Reduzida em 20% */
+}
+
+/* 
+   ESTADO VISÍVEL DA MENSAGEM
+*/
+.thank-message.show {
+    opacity: 1;                           /* Totalmente visível */
+    transform: scale(1);                  /* Tamanho normal */
+    animation: bounceIn 0.6s ease-out;   /* Animação de entrada */
+}
+
+/* ========================================
+   STATUS DA API
+   ======================================== */
+
+/* 
+   INDICADOR DE STATUS DA CONEXÃO COM API
+*/
+.api-status {
+    font-size: 0.8rem;                    /* Fonte pequena */
+    padding: 8px 16px;                    /* Espaçamento interno */
+    border-radius: 15px;                  /* Bordas arredondadas */
+    margin-top: 10px;                     /* Espaçamento superior */
+    transition: all 0.3s ease;           /* Transição suave */
+}
+
+/* 
+   STATUS ONLINE (API funcionando)
+*/
+.api-status.online {
+    background-color: rgba(40, 167, 69, 0.1);  /* Fundo verde claro */
+    color: #28a745;                            /* Texto verde */
+    border: 1px solid rgba(40, 167, 69, 0.3); /* Borda verde */
+}
+
+/* 
+   STATUS OFFLINE (API com problema)
+*/
+.api-status.offline {
+    background-color: rgba(220, 53, 69, 0.1);  /* Fundo vermelho claro */
+    color: #dc3545;                            /* Texto vermelho */
+    border: 1px solid rgba(220, 53, 69, 0.3); /* Borda vermelha */
+}
+
+/* 
+   STATUS CARREGANDO
+*/
+.api-status.loading {
+    background-color: rgba(255, 193, 7, 0.1);  /* Fundo amarelo claro */
+    color: #ffc107;                            /* Texto amarelo */
+    border: 1px solid rgba(255, 193, 7, 0.3); /* Borda amarela */
+}
+
+/* ========================================
+   RODAPÉ
+   ======================================== */
+
+/* 
+   TEXTO DO RODAPÉ
+*/
+.footer-text {
+    font-size: 0.9rem;                    /* Fonte pequena */
+    color: #666;                          /* Cinza médio */
+    margin-top: 20px;                     /* Espaçamento superior */
+    font-style: italic;                   /* Itálico */
+}
+
+/* 
+   INFORMAÇÕES DA API NO RODAPÉ
+*/
+.api-info {
+    margin-top: 10px;                     /* Espaçamento superior */
+}
+
+.api-info a {
+    color: #0066cc;                       /* Links azuis */
+    text-decoration: none;                /* Remove sublinhado */
+    transition: color 0.3s ease;         /* Transição suave */
+}
+
+.api-info a:hover {
+    color: #004499;                       /* Azul mais escuro no hover */
+    text-decoration: underline;           /* Adiciona sublinhado no hover */
+}
+
+/* ========================================
+   ANIMAÇÕES CSS
+   ======================================== */
+
+/* 
+   ANIMAÇÃO DE ENTRADA DO TÍTULO
+*/
+@keyframes fadeInDown {
+    from {
+        opacity: 0;                       /* Começa invisível */
+        transform: translateY(-20px);     /* Começa 20px acima */
+    }
+    to {
+        opacity: 1;                       /* Termina visível */
+        transform: translateY(0);         /* Termina na posição normal */
+    }
+}
+
+/* 
+   ANIMAÇÃO DE BOUNCE DA MENSAGEM
+*/
+@keyframes bounceIn {
+    0% {
+        opacity: 0;                       /* Invisível */
+        transform: scale(0.3);            /* Muito pequeno */
+    }
+    50% {
+        opacity: 1;                       /* Visível */
+        transform: scale(1.1);            /* Ligeiramente maior que normal */
+    }
+    100% {
+        opacity: 1;                       /* Visível */
+        transform: scale(1);              /* Tamanho normal */
+    }
+}
+
+/* 
+   ANIMAÇÃO DE CARREGAMENTO (SPINNER)
+*/
+@keyframes spin {
+    0% { transform: rotate(0deg); }       /* Rotação inicial */
+    100% { transform: rotate(360deg); }   /* Rotação completa */
+}
+
+.loading-spinner {
+    border: 2px solid #f3f3f3;           /* Borda cinza */
+    border-top: 2px solid #3498db;       /* Topo azul */
+    border-radius: 50%;                   /* Círculo */
+    width: 20px;                         /* Largura */
+    height: 20px;                        /* Altura */
+    animation: spin 1s linear infinite;   /* Animação de rotação */
+    display: inline-block;               /* Exibição em linha */
+    margin-right: 10px;                  /* Espaçamento à direita */
+}
+
+/* ========================================
+   RESPONSIVIDADE (DISPOSITIVOS MÓVEIS)
+   ======================================== */
+
+/* 
+   ESTILOS PARA TELAS PEQUENAS (celulares)
+   Aplica quando largura da tela é menor que 480px
+*/
+@media (max-width: 480px) {
+    .container {
+        margin: 20px;                     /* Margem menor */
+        padding: 30px 20px;              /* Padding menor */
+        min-width: unset;                /* Remove largura mínima */
+    }
+    
+    .welcome-title {
+        font-size: 1.8rem;              /* Título menor */
+    }
+    
+    .action-button {
+        padding: 12px 25px;             /* Botão menor */
+        font-size: 1rem;                /* Fonte menor */
+    }
+    
+    .thank-message {
+        font-size: 1.1rem;              /* Mensagem menor */
+    }
+    
+    .api-info {
+        font-size: 0.7rem;              /* Informações menores */
+    }
+}
+
+/* ========================================
+   EFEITOS ESPECIAIS
+   ======================================== */
+
+/* 
+   EFEITO DE PARTÍCULAS DE FUNDO
+   Cria pontos de luz sutis no fundo
+*/
+body::before {
+    content: '';                          /* Elemento vazio */
+    position: fixed;                      /* Posição fixa na tela */
+    top: 0;                              /* No topo */
+    left: 0;                             /* Na esquerda */
+    width: 100%;                         /* Largura total */
+    height: 100%;                        /* Altura total */
+    background-image: 
+        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    pointer-events: none;                /* Não interfere com cliques */
+    z-index: -1;                        /* Fica atrás de tudo */
+}

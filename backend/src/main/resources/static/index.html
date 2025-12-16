@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interface Web - Projeto Steps V1 (Spring Boot)</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 
+        ESTRUTURA HTML DA INTERFACE WEB
+        
+        EXPLICAÇÃO PARA INICIANTES:
+        
+        Esta é a estrutura da nossa página web que vai interagir com o backend Spring Boot.
+        A página mantém o mesmo design visual da versão anterior, mas agora se comunica
+        com uma API REST ao invés de apenas JavaScript local.
+        
+        COMPONENTES PRINCIPAIS:
+        - Header: Contém a mensagem de boas-vindas
+        - Main: Área principal com botão e área de mensagem
+        - Footer: Informações do projeto
+        - Scripts: Lógica JavaScript para comunicação com API
+    -->
+    
+    <div class="container">
+        <!-- CABEÇALHO COM TÍTULO -->
+        <header>
+            <h1 class="welcome-title">Bem-vindo!</h1>
+            <p class="subtitle">Conectado ao Spring Boot Backend</p>
+        </header>
+        
+        <!-- ÁREA PRINCIPAL DE CONTEÚDO -->
+        <main class="main-content">
+            <!-- BOTÃO PRINCIPAL QUE FAZ CHAMADA PARA API -->
+            <button id="thankButton" class="action-button">
+                Clique Aqui
+            </button>
+            
+            <!-- ÁREA PARA EXIBIR RESPOSTA DA API -->
+            <div id="thankMessage" class="thank-message hidden">
+                Obrigado!
+            </div>
+            
+            <!-- INDICADOR DE STATUS DA CONEXÃO COM API -->
+            <div id="apiStatus" class="api-status">
+                <span id="statusText">Verificando conexão...</span>
+            </div>
+        </main>
+        
+        <!-- RODAPÉ COM INFORMAÇÕES -->
+        <footer>
+            <p class="footer-text">Projeto Steps V1 - Spring Boot + React Frontend</p>
+            <div class="api-info">
+                <small>
+                    🔗 API: <span id="apiUrl">http://localhost:8080</span> |
+                    📊 <a href="http://localhost:8080/actuator/health" target="_blank">Health Check</a> |
+                    📈 <a href="http://localhost:8080/actuator" target="_blank">Actuator</a>
+                </small>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- JAVASCRIPT PARA COMUNICAÇÃO COM API -->
+    <script src="script.js"></script>
+</body>
+</html>
