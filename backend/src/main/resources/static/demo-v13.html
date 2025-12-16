@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steps V1.3 - Cadastro com MongoDB</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header .version {
+            background: rgba(255, 255, 255, 0.2);
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section h2::before {
+            content: "📝";
+            font-size: 1.2em;
+        }
+
+        .usuarios-list h2::before {
+            content: "👥";
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #495057;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+            display: block;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+            display: block;
+        }
+
+        .usuario-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #e9ecef;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .usuario-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .usuario-card h3 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 1.2em;
+        }
+
+        .usuario-card p {
+            color: #6c757d;
+            font-size: 0.95em;
+            margin-bottom: 5px;
+        }
+
+        .usuario-card .id {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            color: #adb5bd;
+            word-break: break-all;
+        }
+
+        .usuario-card .actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+
+        .stat-card .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-card .label {
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state::before {
+            content: "📭";
+            font-size: 3em;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border: 2px solid #b3d9ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h4 {
+            color: #004085;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            color: #004085;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Projeto Steps</h1>
+            <div class="version">Versão 1.3 - Integração MongoDB</div>
+            <p style="margin-top: 15px; opacity: 0.9;">Sistema de Cadastro com Banco de Dados NoSQL</p>
+        </div>
+
+        <div class="content">
+            <!-- SEÇÃO DE CADASTRO -->
+            <div class="section cadastro-form">
+                <h2>Cadastrar Usuário</h2>
+                
+                <div class="info-box">
+                    <h4>ℹ️ Como funciona?</h4>
+                    <p>
+                        Preencha os dados abaixo e clique em "Cadastrar". 
+                        Os dados serão salvos no MongoDB, um banco de dados NoSQL 
+                        que armazena informações em formato JSON.
+                    </p>
+                </div>
+
+                <div id="message" class="message"></div>
+
+                <form id="cadastroForm">
+                    <div class="form-group">
+                        <label for="nome">Nome Completo *</label>
+                        <input 
+                            type="text" 
+                            id="nome" 
+                            name="nome" 
+                            placeholder="Ex: João Silva"
+                            required
+                            minlength="3"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dataNascimento">Data de Nascimento *</label>
+                        <input 
+                            type="date" 
+                            id="dataNascimento" 
+                            name="dataNascimento" 
+                            required
+                            max=""
+                        >
+                    </div>
+
+                    <button type="submit" class="btn" id="btnCadastrar">
+                        Cadastrar no MongoDB
+                    </button>
+                </form>
+
+                <div class="info-box" style="margin-top: 20px;">
+                    <h4>🔍 Testando a API</h4>
+                    <p>
+                        <strong>Endpoint:</strong> POST /api/v1.3/usuarios<br>
+                        <strong>Banco:</strong> passos<br>
+                        <strong>Coleção:</strong> dados_usuario
+                    </p>
+                </div>
+            </div>
+
+            <!-- SEÇÃO DE LISTAGEM -->
+            <div class="section usuarios-list">
+                <h2>Usuários Cadastrados</h2>
+
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="number" id="totalUsuarios">0</div>
+                        <div class="label">Total de Usuários</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="ultimoCadastro">--</div>
+                        <div class="label">Último Cadastro</div>
+                    </div>
+                </div>
+
+                <div id="usuariosContainer">
+                    <div class="loading">Carregando usuários...</div>
+                </div>
+
+                <button class="btn" onclick="carregarUsuarios()" style="margin-top: 15px;">
+                    🔄 Atualizar Lista
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // CONFIGURAÇÃO DA API
+        // ========================================
+        
+        const API_BASE_URL = 'http://localhost:8080/api/v1.3';
+        
+        // ========================================
+        // CONFIGURAÇÃO DA DATA MÁXIMA (HOJE)
+        // ========================================
+        
+        // Define a data máxima como hoje para evitar datas futuras
+        document.getElementById('dataNascimento').max = new Date().toISOString().split('T')[0];
+        
+        // ========================================
+        // FUNÇÃO: CADASTRAR USUÁRIO
+        // ========================================
+        
+        document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const nome = document.getElementById('nome').value.trim();
+            const dataNascimento = document.getElementById('dataNascimento').value;
+            
+            // Validação básica no frontend
+            if (!nome || !dataNascimento) {
+                mostrarMensagem('Por favor, preencha todos os campos!', 'error');
+                return;
+            }
+            
+            const btnCadastrar = document.getElementById('btnCadastrar');
+            btnCadastrar.disabled = true;
+            btnCadastrar.textContent = 'Cadastrando...';
+            
+            try {
+                // Envia POST para a API
+                const response = await fetch(`${API_BASE_URL}/usuarios`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nome: nome,
+                        dataNascimento: dataNascimento
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    mostrarMensagem(
+                        `✅ ${data.mensagem} ID: ${data.usuario.id.substring(0, 8)}...`, 
+                        'success'
+                    );
+                    
+                    // Limpa o formulário
+                    document.getElementById('cadastroForm').reset();
+                    
+                    // Atualiza a lista
+                    carregarUsuarios();
+                } else {
+                    mostrarMensagem(`❌ Erro: ${data.erro}`, 'error');
+                }
+                
+            } catch (error) {
+                mostrarMensagem(`❌ Erro ao conectar com a API: ${error.message}`, 'error');
+                console.error('Erro:', error);
+            } finally {
+                btnCadastrar.disabled = false;
+                btnCadastrar.textContent = 'Cadastrar no MongoDB';
+            }
+        });
+        
+        // ========================================
+        // FUNÇÃO: MOSTRAR MENSAGEM
+        // ========================================
+        
+        function mostrarMensagem(texto, tipo) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = texto;
+            messageDiv.className = `message ${tipo}`;
+            
+            // Remove a mensagem após 5 segundos
+            setTimeout(() => {
+                messageDiv.className = 'message';
+            }, 5000);
+        }
+        
+        // ========================================
+        // FUNÇÃO: CARREGAR USUÁRIOS
+        // ========================================
+        
+        async function carregarUsuarios() {
+            const container = document.getElementById('usuariosContainer');
+            container.innerHTML = '<div class="loading">Carregando usuários...</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/usuarios`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const usuarios = data.usuarios || [];
+                
+                // Atualiza estatísticas
+                document.getElementById('totalUsuarios').textContent = usuarios.length;
+                
+                if (usuarios.length > 0) {
+                    // Pega o último cadastro
+                    const ultimoUsuario = usuarios[usuarios.length - 1];
+                    const ultimoNome = ultimoUsuario.nome.split(' ')[0];
+                    document.getElementById('ultimoCadastro').textContent = ultimoNome;
+                    
+                    // Renderiza os cards
+                    container.innerHTML = usuarios.map(usuario => `
+                        <div class="usuario-card">
+                            <h3>${usuario.nome}</h3>
+                            <p>📅 Nascimento: ${formatarData(usuario.dataNascimento)}</p>
+                            <p class="id">🔑 ID: ${usuario.id}</p>
+                            <div class="actions">
+                                <button class="btn-small btn-delete" onclick="deletarUsuario('${usuario.id}', '${usuario.nome}')">
+                                    🗑️ Deletar
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <p><strong>Nenhum usuário cadastrado ainda</strong></p>
+                            <p>Cadastre o primeiro usuário usando o formulário ao lado!</p>
+                        </div>
+                    `;
+                    document.getElementById('ultimoCadastro').textContent = '--';
+                }
+                
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p style="color: #dc3545;"><strong>⚠️ Erro ao carregar usuários</strong></p>
+                        <p>${error.message}</p>
+                        <p style="margin-top: 10px; font-size: 0.9em;">
+                            Verifique se o MongoDB está rodando e se o backend está ativo.
+                        </p>
+                    </div>
+                `;
+                console.error('Erro:', error);
+            }
+        }
+        
+        // ========================================
+        // FUNÇÃO: DELETAR USUÁRIO
+        // ========================================
+        
+        async function deletarUsuario(id, nome) {
+            if (!confirm(`Tem certeza que deseja deletar o usuário "${nome}"?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/usuarios/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    mostrarMensagem(`✅ Usuário "${nome}" deletado com sucesso!`, 'success');
+                    carregarUsuarios();
+                } else {
+                    mostrarMensagem(`❌ Erro ao deletar: ${data.erro}`, 'error');
+                }
+                
+            } catch (error) {
+                mostrarMensagem(`❌ Erro ao deletar usuário: ${error.message}`, 'error');
+                console.error('Erro:', error);
+            }
+        }
+        
+        // ========================================
+        // FUNÇÃO: FORMATAR DATA
+        // ========================================
+        
+        function formatarData(dataString) {
+            const data = new Date(dataString + 'T00:00:00');
+            return data.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+        
+        // ========================================
+        // CARREGA USUÁRIOS AO ABRIR A PÁGINA
+        // ========================================
+        
+        carregarUsuarios();
+        
+        // Atualiza automaticamente a cada 30 segundos
+        setInterval(carregarUsuarios, 30000);
+    </script>
+</body>
+</html>
