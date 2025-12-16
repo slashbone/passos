@@ -14,10 +14,10 @@
     
     <groupId>com.projeto</groupId>
     <artifactId>steps-backend</artifactId>
-    <version>1.0.0</version>
+    <version>1.2.0</version>
     <packaging>jar</packaging>
     
-    <name>Steps Backend</name>
+    <name>Steps Backend V1.2 - REST API Expandida</name>
     <description>Backend Spring Boot para o Projeto Steps V1</description>
     
     <properties>
