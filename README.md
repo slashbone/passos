@@ -11,6 +11,7 @@ Este projeto é uma **aplicação web completa** desenvolvida com **Spring Boot*
 - 🔄 **Verificação automática** de status da API
 - 📱 **Design responsivo** para desktop e mobile
 - ⚡ **Hot-reload** para desenvolvimento ágil
+- 📥 **Importação CSV** para carregamento em massa de dados
 
 ### 🏗️ **Arquitetura Moderna:**
 - **Backend**: Spring Boot 3.2.1 + Actuator + DevTools
@@ -107,7 +108,43 @@ Após iniciar, a aplicação estará disponível em:
 - 📋 **Informações**: http://localhost:8080/actuator/info
 - 🎛️ **Todos endpoints**: http://localhost:8080/actuator
 
-## 📚 Explicação Detalhada dos Arquivos (Para Iniciantes)
+## � **Importação de Dados via CSV**
+
+### **🚀 Nova Funcionalidade: Script de Importação em Lote**
+
+O projeto agora inclui um script automatizado para importação de dados em massa:
+
+#### **📋 Como Usar:**
+```bash
+# 1. Criar arquivo CSV com dados
+notepad cadastro-mongo.csv
+
+# 2. Executar script de importação
+.\importar-csv-mongodb.bat
+```
+
+#### **🗂️ Formato do Arquivo CSV:**
+```csv
+Nome Completo,Data Nascimento  
+João Silva Santos,15051985
+Maria Oliveira Costa,23081990
+Pedro Almeida Souza,08121978
+```
+
+**🎯 Características:**
+- ✅ **Formato simples**: Nome completo + Data (ddmmaaaa)
+- ✅ **Conversão automática** de datas para formato ISO
+- ✅ **Relatório detalhado** com sucessos e erros
+- ✅ **Validação prévia** da API antes da importação
+- ✅ **Tratamento individual** de registros com erro
+
+**📊 O script fornece:**
+- Contagem total de registros processados
+- Número de sucessos e erros
+- IDs dos registros inseridos com sucesso
+- Verificação pós-importação do banco de dados
+
+## �📚 Explicação Detalhada dos Arquivos (Para Iniciantes)
 
 ### 🎯 **Backend (Spring Boot)**
 
@@ -262,6 +299,43 @@ mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Xdebug"
 # Ver logs da aplicação
 tail -f logs/spring-boot.log
 ```
+
+---
+
+## 🛠️ **Scripts Disponíveis**
+
+### **📁 Scripts de Execução:**
+- `executar-spring-boot.bat` - Execução rápida do projeto
+- `build-e-executar.bat` - Build completo + execução do JAR
+
+### **📥 Scripts de Importação:**
+- `importar-csv-mongodb.bat` - Importação em massa via CSV
+- `cadastro-mongo.csv` - Arquivo exemplo com 10 registros de teste
+
+### **📋 Exemplo de Uso Completo:**
+```bash
+# 1. Executar o projeto
+.\executar-spring-boot.bat
+
+# 2. Aguardar inicialização completa
+# 3. Em outro terminal, executar importação
+.\importar-csv-mongodb.bat
+
+# 4. Verificar resultados em http://localhost:8080
+```
+
+---
+
+## 📞 **Suporte e Contato**
+
+Para dúvidas ou sugestões sobre o projeto ou os novos scripts de importação:
+- 🐛 **Issues**: Criar issue no repositório
+- 💡 **Melhorias**: Pull requests são bem-vindos
+- 📚 **Documentação**: Consultar `VERSAO-V131-DOCUMENTACAO.md` para detalhes técnicos
+
+---
+
+**🎉 Projeto Steps V1 - Agora com importação automatizada de dados! 🚀**
 
 ## 📈 Próximos Passos
 

@@ -74,6 +74,7 @@ public class WelcomeControllerV13 {
             "POST /usuarios", "Cadastra um novo usuário",
             "GET /usuarios", "Lista todos os usuários",
             "GET /usuarios/{id}", "Busca usuário por ID",
+            "PUT /usuarios/{id}", "Atualiza um usuário",
             "GET /usuarios/buscar?nome=", "Busca usuários por nome",
             "DELETE /usuarios/{id}", "Deleta um usuário"
         ));
@@ -309,6 +310,87 @@ public class WelcomeControllerV13 {
         } catch (Exception e) {
             Map<String, String> erro = new HashMap<>();
             erro.put("erro", "Erro ao deletar usuário: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(erro);
+        }
+    }
+    
+    /**
+     * ENDPOINT: ATUALIZAR USUÁRIO
+     * 
+     * URL: PUT http://localhost:8080/api/v1.3/usuarios/{id}
+     * Exemplo: PUT http://localhost:8080/api/v1.3/usuarios/65a1b2c3d4e5f6789012345
+     * 
+     * CORPO DA REQUISIÇÃO (JSON):
+     * {
+     *   "nome": "João Silva Santos",
+     *   "dataNascimento": "1990-05-15"
+     * }
+     * 
+     * COMO FUNCIONA:
+     * 1. Verifica se o usuário existe no banco
+     * 2. Valida os novos dados
+     * 3. Atualiza o usuário no MongoDB
+     * 4. Retorna o usuário atualizado
+     * 
+     * @param id ID do usuário a ser atualizado
+     * @param usuario Novos dados do usuário
+     * @return ResponseEntity com usuário atualizado e status HTTP
+     */
+    @PutMapping("/usuarios/{id}")
+    public ResponseEntity<?> atualizarUsuario(@PathVariable String id, @RequestBody Usuario usuario) {
+        try {
+            // Verificar se o usuário existe
+            if (!usuarioRepository.existsById(id)) {
+                Map<String, String> erro = new HashMap<>();
+                erro.put("erro", "Usuário não encontrado");
+                erro.put("id", id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
+            }
+            
+            // VALIDAÇÃO BÁSICA DOS NOVOS DADOS
+            if (usuario.getNome() == null || usuario.getNome().trim().isEmpty()) {
+                Map<String, String> erro = new HashMap<>();
+                erro.put("erro", "Nome é obrigatório");
+                erro.put("campo", "nome");
+                return ResponseEntity.badRequest().body(erro);
+            }
+            
+            if (usuario.getDataNascimento() == null) {
+                Map<String, String> erro = new HashMap<>();
+                erro.put("erro", "Data de nascimento é obrigatória");
+                erro.put("campo", "dataNascimento");
+                return ResponseEntity.badRequest().body(erro);
+            }
+            
+            // Verifica se a data não é futura
+            if (usuario.getDataNascimento().isAfter(LocalDate.now())) {
+                Map<String, String> erro = new HashMap<>();
+                erro.put("erro", "Data de nascimento não pode ser no futuro");
+                erro.put("campo", "dataNascimento");
+                return ResponseEntity.badRequest().body(erro);
+            }
+            
+            // Define o ID no objeto para manter o mesmo ID
+            usuario.setId(id);
+            
+            // ATUALIZA NO MONGODB
+            // O método save() do Repository atualiza se o ID já existe
+            Usuario usuarioAtualizado = usuarioRepository.save(usuario);
+            
+            // CRIA RESPOSTA DE SUCESSO
+            Map<String, Object> resposta = new HashMap<>();
+            resposta.put("mensagem", "Usuário atualizado com sucesso!");
+            resposta.put("usuario", usuarioAtualizado);
+            resposta.put("timestamp", java.time.LocalDateTime.now());
+            
+            // Retorna status 200 (OK) com o usuário atualizado
+            return ResponseEntity.ok(resposta);
+            
+        } catch (Exception e) {
+            // TRATAMENTO DE ERRO
+            Map<String, String> erro = new HashMap<>();
+            erro.put("erro", "Erro ao atualizar usuário: " + e.getMessage());
+            erro.put("tipo", e.getClass().getSimpleName());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(erro);
         }
     }

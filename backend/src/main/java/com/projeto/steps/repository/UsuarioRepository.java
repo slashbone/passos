@@ -80,6 +80,19 @@ public interface UsuarioRepository extends MongoRepository<Usuario, String> {
     List<Usuario> findByNomeIgnoreCase(String nome);
     
     /**
+     * BUSCA USUÁRIOS QUE CONTENHAM O NOME ESPECIFICADO (BUSCA PARCIAL)
+     * 
+     * COMO FUNCIONA:
+     * Busca usuários cujos nomes contenham a string especificada, ignorando
+     * maiúsculas/minúsculas. Por exemplo, "joão" encontraria "João Silva", 
+     * "Maria João", "João Pedro", etc.
+     * 
+     * @param nome Parte do nome a ser buscada (case-insensitive)
+     * @return Lista de usuários cujos nomes contêm a string
+     */
+    List<Usuario> findByNomeContainingIgnoreCase(String nome);
+    
+    /**
      * VERIFICA SE EXISTE USUÁRIO COM DETERMINADO NOME
      * 
      * COMO FUNCIONA:

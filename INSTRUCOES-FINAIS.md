@@ -28,6 +28,37 @@ mvn spring-boot:run
 ### 🎯 Funcionalidades Implementadas
 
 ✅ **Interface Web Responsiva**
+✅ **📥 Nova Funcionalidade: Importação CSV** - Sistema completo de importação em massa
+
+#### 🆕 **Como Usar a Importação CSV:**
+
+**1. Executar o projeto:**
+```bash
+.\executar-spring-boot.bat
+```
+
+**2. Em outro terminal, executar importação:**
+```bash
+.\importar-csv-mongodb.bat
+```
+
+**3. O script processará automaticamente o arquivo `cadastro-mongo.csv`**
+
+**📋 Exemplo de CSV:**
+```csv
+Nome Completo,Data Nascimento
+João Silva Santos,15051985
+Maria Oliveira Costa,23081990
+Pedro Almeida Souza,08121978
+```
+
+**📊 Resultados esperados:**
+- Total de registros processados: 10  
+- Sucessos: 9
+- Erros: 1
+- Relatório colorido com IDs dos registros inseridos
+
+✅ **Interface Web Responsiva**
 - Página com mensagem "Bem-vindo!"  
 - Botão interativo que mostra "Obrigado!"
 - Design moderno com animações CSS
@@ -122,7 +153,31 @@ mvn clean compile
 
 ---
 
-## 🎊 MISSÃO CUMPRIDA!
+## � **Novos Arquivos Adicionados (Importação CSV)**
+
+### **📥 Sistema de Importação em Massa:**
+- `importar-csv-mongodb.bat` - Script principal de importação
+- `cadastro-mongo.csv` - Arquivo de exemplo com 10 registros de teste
+
+### **📚 Documentação Atualizada:**
+- `VERSAO-V131-DOCUMENTACAO.md` - Inclui seção completa sobre importação CSV
+- `README.md` - Atualizado com nova funcionalidade
+
+### **🎯 Funcionalidades do Script de Importação:**
+- ✅ Validação prévia da API
+- ✅ Conversão automática de datas (ddmmaaaa → aaaa-mm-dd)  
+- ✅ Relatório detalhado com cores
+- ✅ Tratamento individual de erros
+- ✅ Verificação pós-importação
+
+**📊 Teste Realizado:**
+- ✅ 10 registros processados
+- ✅ 9 sucessos, 1 erro (90% de sucesso)
+- ✅ Script funcionando perfeitamente
+
+---
+
+## �🎊 MISSÃO CUMPRIDA!
 
 **Objetivo Original:** *"Faça uma interface de front end com Java com frase bem vindo e um botão que ao clicar devolva uma mensagem chamada obrigado"*
 

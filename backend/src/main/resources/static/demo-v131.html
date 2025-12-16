@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steps V1.3.1 - CRUD Completo MongoDB</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1400px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header .version {
+            background: rgba(255, 255, 255, 0.2);
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            text-align: center;
+            background: #e9ecef;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            color: #495057;
+            transition: all 0.3s;
+            border-right: 1px solid #dee2e6;
+        }
+
+        .tab:last-child {
+            border-right: none;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .tab:hover:not(.active) {
+            background: #f8f9fa;
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #495057;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+            color: #212529;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 0.9em;
+            width: auto;
+            margin: 2px;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+            display: block;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+            display: block;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 2px solid #bee5eb;
+            display: block;
+        }
+
+        .usuario-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 2px solid #e9ecef;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .usuario-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .usuario-card h3 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 1.3em;
+        }
+
+        .usuario-card p {
+            color: #6c757d;
+            font-size: 0.95em;
+            margin-bottom: 5px;
+        }
+
+        .usuario-card .id {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            color: #adb5bd;
+            word-break: break-all;
+            margin-bottom: 10px;
+        }
+
+        .usuario-card .actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-card .label {
+            color: #6c757d;
+            font-size: 0.95em;
+            margin-top: 8px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+        }
+
+        .empty-state::before {
+            content: "📭";
+            font-size: 3em;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border: 2px solid #b3d9ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h4 {
+            color: #004085;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            color: #004085;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .search-section {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+            margin-bottom: 20px;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .search-form .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .search-form .btn {
+            width: auto;
+            min-width: 120px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab {
+                border-right: none;
+                border-bottom: 1px solid #dee2e6;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .usuario-card .actions {
+                flex-direction: column;
+            }
+
+            .btn-small {
+                width: 100%;
+            }
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Projeto Steps</h1>
+            <div class="version">Versão 1.3.1 - CRUD Completo MongoDB</div>
+            <p style="margin-top: 15px; opacity: 0.9;">Sistema Completo de Gerenciamento de Usuários</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="openTab(event, 'dashboard')">📊 Dashboard</button>
+            <button class="tab" onclick="openTab(event, 'cadastrar')">📝 Cadastrar</button>
+            <button class="tab" onclick="openTab(event, 'listar')">👥 Listar</button>
+            <button class="tab" onclick="openTab(event, 'consultar')">🔍 Consultar</button>
+        </div>
+
+        <!-- TAB: DASHBOARD -->
+        <div id="dashboard" class="tab-content active">
+            <h2 style="color: #667eea; margin-bottom: 20px;">📊 Dashboard do Sistema</h2>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="number" id="dashTotalUsuarios">0</div>
+                    <div class="label">Total de Usuários</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="dashUltimoCadastro">--</div>
+                    <div class="label">Último Cadastro</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="dashSistemaStatus">✅</div>
+                    <div class="label">Status do Sistema</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="dashBancoStatus">🔌</div>
+                    <div class="label">MongoDB</div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h4>🎯 Funcionalidades Disponíveis</h4>
+                <p>
+                    <strong>✅ Cadastrar:</strong> Adicionar novos usuários<br>
+                    <strong>👁️ Consultar:</strong> Buscar usuários por ID ou nome<br>
+                    <strong>✏️ Editar:</strong> Atualizar dados de usuários existentes<br>
+                    <strong>🗑️ Excluir:</strong> Remover usuários do sistema<br>
+                    <strong>📋 Listar:</strong> Visualizar todos os usuários cadastrados
+                </p>
+            </div>
+
+            <div class="section">
+                <h2>🔍 Informações da API</h2>
+                <div id="apiInfo">Carregando informações da API...</div>
+            </div>
+        </div>
+
+        <!-- TAB: CADASTRAR -->
+        <div id="cadastrar" class="tab-content">
+            <div class="section">
+                <h2>📝 Cadastrar Novo Usuário</h2>
+                
+                <div id="mensagemCadastro" class="message"></div>
+
+                <form id="cadastroForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nome">Nome Completo *</label>
+                            <input 
+                                type="text" 
+                                id="nome" 
+                                name="nome" 
+                                placeholder="Ex: João Silva"
+                                required
+                                minlength="3"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dataNascimento">Data de Nascimento *</label>
+                            <input 
+                                type="date" 
+                                id="dataNascimento" 
+                                name="dataNascimento" 
+                                required
+                                max=""
+                            >
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn" id="btnCadastrar">
+                        ➕ Cadastrar Usuário
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- TAB: LISTAR -->
+        <div id="listar" class="tab-content">
+            <div class="section">
+                <h2>👥 Lista de Usuários Cadastrados</h2>
+                
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="number" id="totalUsuarios">0</div>
+                        <div class="label">Total de Usuários</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="number" id="ultimoCadastro">--</div>
+                        <div class="label">Último Cadastro</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button class="btn" onclick="carregarUsuarios()">🔄 Atualizar Lista</button>
+                    <button class="btn btn-secondary" onclick="exportarUsuarios()">📥 Exportar JSON</button>
+                </div>
+
+                <div id="usuariosContainer">
+                    <div class="loading">Carregando usuários...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: CONSULTAR -->
+        <div id="consultar" class="tab-content">
+            <div class="search-section">
+                <h2 style="color: #667eea; margin-bottom: 20px;">🔍 Consultar Usuários</h2>
+                
+                <div class="search-form">
+                    <div class="form-group">
+                        <label for="tipoConsulta">Tipo de Consulta</label>
+                        <select id="tipoConsulta" onchange="toggleConsulta()">
+                            <option value="id">Buscar por ID</option>
+                            <option value="nome">Buscar por Nome</option>
+                            <option value="todos">Listar Todos</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="campoConsulta">
+                        <label for="valorConsulta">ID do Usuário</label>
+                        <input type="text" id="valorConsulta" placeholder="Digite o ID do usuário">
+                    </div>
+                    <button class="btn" onclick="executarConsulta()">🔍 Buscar</button>
+                </div>
+            </div>
+
+            <div id="resultadoConsulta"></div>
+        </div>
+    </div>
+
+    <!-- MODAL DE EDIÇÃO -->
+    <div id="modalEdicao" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModalEdicao()">&times;</span>
+            <h2 style="color: #667eea; margin-bottom: 20px;">✏️ Editar Usuário</h2>
+            
+            <div id="mensagemEdicao" class="message"></div>
+
+            <form id="edicaoForm">
+                <div class="form-group">
+                    <label for="editId">ID do Usuário</label>
+                    <input type="text" id="editId" readonly style="background: #f8f9fa;">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editNome">Nome Completo *</label>
+                        <input 
+                            type="text" 
+                            id="editNome" 
+                            name="nome" 
+                            required
+                            minlength="3"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editDataNascimento">Data de Nascimento *</label>
+                        <input 
+                            type="date" 
+                            id="editDataNascimento" 
+                            name="dataNascimento" 
+                            required
+                            max=""
+                        >
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-success">💾 Salvar Alterações</button>
+                    <button type="button" class="btn btn-secondary" onclick="fecharModalEdicao()">❌ Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // CONFIGURAÇÃO DA API
+        // ========================================
+        
+        const API_BASE_URL = 'http://localhost:8080/api/v1.31';
+        
+        // ========================================
+        // CONFIGURAÇÃO DE DATAS
+        // ========================================
+        
+        // Define a data máxima como hoje para todos os campos de data
+        const hoje = new Date().toISOString().split('T')[0];
+        document.getElementById('dataNascimento').max = hoje;
+        document.getElementById('editDataNascimento').max = hoje;
+        
+        // ========================================
+        // NAVEGAÇÃO ENTRE TABS
+        // ========================================
+        
+        function openTab(evt, tabName) {
+            const tabContents = document.getElementsByClassName('tab-content');
+            const tabs = document.getElementsByClassName('tab');
+            
+            // Esconde todos os conteúdos
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            // Remove classe active de todas as tabs
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            
+            // Mostra o conteúdo selecionado e marca a tab como ativa
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+            
+            // Carrega dados específicos da tab
+            if (tabName === 'dashboard') {
+                carregarDashboard();
+            } else if (tabName === 'listar') {
+                carregarUsuarios();
+            }
+        }
+        
+        // ========================================
+        // DASHBOARD
+        // ========================================
+        
+        async function carregarDashboard() {
+            try {
+                // Carrega informações da API
+                const apiResponse = await fetch(`${API_BASE_URL}/`);
+                const apiInfo = await apiResponse.json();
+                
+                document.getElementById('apiInfo').innerHTML = `
+                    <div class="info-box">
+                        <h4>📡 ${apiInfo.titulo || 'API Steps'}</h4>
+                        <p><strong>Versão:</strong> ${apiInfo.versao || '1.3.1'}</p>
+                        <p><strong>Banco:</strong> ${apiInfo.banco_de_dados || 'MongoDB'}</p>
+                        <p><strong>Coleção:</strong> ${apiInfo.colecao || 'dados_usuario'}</p>
+                    </div>
+                `;
+                
+                // Carrega estatísticas
+                const statsResponse = await fetch(`${API_BASE_URL}/estatisticas`);
+                const stats = await statsResponse.json();
+                
+                document.getElementById('dashTotalUsuarios').textContent = stats.total_usuarios || 0;
+                document.getElementById('dashSistemaStatus').textContent = '✅';
+                document.getElementById('dashBancoStatus').textContent = '✅';
+                
+                // Carrega último cadastro
+                const usuariosResponse = await fetch(`${API_BASE_URL}/usuarios`);
+                const usuarios = await usuariosResponse.json();
+                
+                if (usuarios.usuarios && usuarios.usuarios.length > 0) {
+                    const ultimo = usuarios.usuarios[usuarios.usuarios.length - 1];
+                    document.getElementById('dashUltimoCadastro').textContent = ultimo.nome.split(' ')[0];
+                }
+                
+            } catch (error) {
+                document.getElementById('dashSistemaStatus').textContent = '❌';
+                document.getElementById('dashBancoStatus').textContent = '❌';
+                console.error('Erro ao carregar dashboard:', error);
+            }
+        }
+        
+        // ========================================
+        // CADASTRO DE USUÁRIOS
+        // ========================================
+        
+        document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const nome = document.getElementById('nome').value.trim();
+            const dataNascimento = document.getElementById('dataNascimento').value;
+            
+            if (!nome || !dataNascimento) {
+                mostrarMensagem('mensagemCadastro', 'Por favor, preencha todos os campos!', 'error');
+                return;
+            }
+            
+            const btnCadastrar = document.getElementById('btnCadastrar');
+            btnCadastrar.disabled = true;
+            btnCadastrar.textContent = 'Cadastrando...';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/usuarios`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nome: nome,
+                        dataNascimento: dataNascimento
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    mostrarMensagem('mensagemCadastro', 
+                        `✅ ${data.mensagem} ID: ${data.usuario.id.substring(0, 8)}...`, 
+                        'success'
+                    );
+                    
+                    document.getElementById('cadastroForm').reset();
+                } else {
+                    mostrarMensagem('mensagemCadastro', `❌ Erro: ${data.erro}`, 'error');
+                }
+                
+            } catch (error) {
+                mostrarMensagem('mensagemCadastro', `❌ Erro ao conectar com a API: ${error.message}`, 'error');
+                console.error('Erro:', error);
+            } finally {
+                btnCadastrar.disabled = false;
+                btnCadastrar.textContent = '➕ Cadastrar Usuário';
+            }
+        });
+        
+        // ========================================
+        // LISTAGEM DE USUÁRIOS
+        // ========================================
+        
+        async function carregarUsuarios() {
+            const container = document.getElementById('usuariosContainer');
+            container.innerHTML = '<div class="loading">Carregando usuários...</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/usuarios`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const usuarios = data.usuarios || [];
+                
+                // Atualiza estatísticas
+                document.getElementById('totalUsuarios').textContent = usuarios.length;
+                
+                if (usuarios.length > 0) {
+                    const ultimoUsuario = usuarios[usuarios.length - 1];
+                    const ultimoNome = ultimoUsuario.nome.split(' ')[0];
+                    document.getElementById('ultimoCadastro').textContent = ultimoNome;
+                    
+                    // Renderiza os cards
+                    container.innerHTML = usuarios.map(usuario => `
+                        <div class="usuario-card">
+                            <h3>${usuario.nome}</h3>
+                            <p>📅 <strong>Nascimento:</strong> ${formatarData(usuario.dataNascimento)}</p>
+                            <p class="id">🔑 <strong>ID:</strong> ${usuario.id}</p>
+                            <div class="actions">
+                                <button class="btn-small btn-success" onclick="editarUsuario('${usuario.id}')">
+                                    ✏️ Editar
+                                </button>
+                                <button class="btn-small btn-warning" onclick="consultarUsuario('${usuario.id}')">
+                                    👁️ Ver Detalhes
+                                </button>
+                                <button class="btn-small btn-danger" onclick="deletarUsuario('${usuario.id}', '${usuario.nome}')">
+                                    🗑️ Excluir
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <p><strong>Nenhum usuário cadastrado ainda</strong></p>
+                            <p>Use a aba "Cadastrar" para adicionar o primeiro usuário!</p>
+                        </div>
+                    `;
+                    document.getElementById('ultimoCadastro').textContent = '--';
+                }
+                
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p style="color: #dc3545;"><strong>⚠️ Erro ao carregar usuários</strong></p>
+                        <p>${error.message}</p>
+                        <p style="margin-top: 10px; font-size: 0.9em;">
+                            Verifique se o MongoDB está rodando e se o backend está ativo.
+                        </p>
+                    </div>
+                `;
+                console.error('Erro:', error);
+            }
+        }
+        
+        // ========================================
+        // CONSULTA DE USUÁRIOS
+        // ========================================
+        
+        function toggleConsulta() {
+            const tipo = document.getElementById('tipoConsulta').value;
+            const campo = document.getElementById('campoConsulta');
+            const valorInput = document.getElementById('valorConsulta');
+            const label = campo.querySelector('label');
+            
+            if (tipo === 'id') {
+                campo.style.display = 'block';
+                label.textContent = 'ID do Usuário';
+                valorInput.placeholder = 'Digite o ID do usuário';
+            } else if (tipo === 'nome') {
+                campo.style.display = 'block';
+                label.textContent = 'Nome ou parte do nome';
+                valorInput.placeholder = 'Digite o nome do usuário';
+            } else {
+                campo.style.display = 'none';
+            }
+        }
+        
+        async function executarConsulta() {
+            const tipo = document.getElementById('tipoConsulta').value;
+            const valor = document.getElementById('valorConsulta').value.trim();
+            const resultado = document.getElementById('resultadoConsulta');
+            
+            resultado.innerHTML = '<div class="loading">Buscando...</div>';
+            
+            try {
+                let response;
+                
+                if (tipo === 'todos') {
+                    response = await fetch(`${API_BASE_URL}/usuarios`);
+                } else if (tipo === 'id') {
+                    if (!valor) {
+                        resultado.innerHTML = '<div class="message error">Por favor, digite um ID para buscar.</div>';
+                        return;
+                    }
+                    response = await fetch(`${API_BASE_URL}/usuarios/${valor}`);
+                } else if (tipo === 'nome') {
+                    if (!valor) {
+                        resultado.innerHTML = '<div class="message error">Por favor, digite um nome para buscar.</div>';
+                        return;
+                    }
+                    response = await fetch(`${API_BASE_URL}/usuarios/buscar?nome=${encodeURIComponent(valor)}`);
+                }
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    if (tipo === 'id') {
+                        // Busca por ID retorna um usuário
+                        resultado.innerHTML = `
+                            <div class="section">
+                                <h3>👤 Usuário Encontrado</h3>
+                                <div class="usuario-card">
+                                    <h3>${data.usuario.nome}</h3>
+                                    <p>📅 <strong>Nascimento:</strong> ${formatarData(data.usuario.dataNascimento)}</p>
+                                    <p class="id">🔑 <strong>ID:</strong> ${data.usuario.id}</p>
+                                    <div class="actions">
+                                        <button class="btn-small btn-success" onclick="editarUsuario('${data.usuario.id}')">
+                                            ✏️ Editar
+                                        </button>
+                                        <button class="btn-small btn-danger" onclick="deletarUsuario('${data.usuario.id}', '${data.usuario.nome}')">
+                                            🗑️ Excluir
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        // Busca por nome ou todos retorna lista
+                        const usuarios = data.usuarios || [];
+                        
+                        if (usuarios.length > 0) {
+                            resultado.innerHTML = `
+                                <div class="section">
+                                    <h3>👥 ${usuarios.length} usuário(s) encontrado(s)</h3>
+                                    ${usuarios.map(usuario => `
+                                        <div class="usuario-card">
+                                            <h3>${usuario.nome}</h3>
+                                            <p>📅 <strong>Nascimento:</strong> ${formatarData(usuario.dataNascimento)}</p>
+                                            <p class="id">🔑 <strong>ID:</strong> ${usuario.id}</p>
+                                            <div class="actions">
+                                                <button class="btn-small btn-success" onclick="editarUsuario('${usuario.id}')">
+                                                    ✏️ Editar
+                                                </button>
+                                                <button class="btn-small btn-danger" onclick="deletarUsuario('${usuario.id}', '${usuario.nome}')">
+                                                    🗑️ Excluir
+                                                </button>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `;
+                        } else {
+                            resultado.innerHTML = '<div class="message info">Nenhum usuário encontrado com estes critérios.</div>';
+                        }
+                    }
+                } else {
+                    resultado.innerHTML = `<div class="message error">❌ ${data.erro || 'Erro na consulta'}</div>`;
+                }
+                
+            } catch (error) {
+                resultado.innerHTML = `<div class="message error">❌ Erro ao executar consulta: ${error.message}</div>`;
+                console.error('Erro na consulta:', error);
+            }
+        }
+        
+        function consultarUsuario(id) {
+            // Muda para a tab de consulta
+            document.querySelector('.tab.active').classList.remove('active');
+            document.querySelector('.tab-content.active').classList.remove('active');
+            
+            document.querySelectorAll('.tab')[3].classList.add('active');
+            document.getElementById('consultar').classList.add('active');
+            
+            // Configura consulta por ID
+            document.getElementById('tipoConsulta').value = 'id';
+            document.getElementById('valorConsulta').value = id;
+            toggleConsulta();
+            
+            // Executa a consulta
+            executarConsulta();
+        }
+        
+        // ========================================
+        // EDIÇÃO DE USUÁRIOS
+        // ========================================
+        
+        async function editarUsuario(id) {
+            try {
+                // Busca dados do usuário
+                const response = await fetch(`${API_BASE_URL}/usuarios/${id}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Preenche o modal com os dados
+                    document.getElementById('editId').value = data.usuario.id;
+                    document.getElementById('editNome').value = data.usuario.nome;
+                    document.getElementById('editDataNascimento').value = data.usuario.dataNascimento;
+                    
+                    // Abre o modal
+                    document.getElementById('modalEdicao').style.display = 'block';
+                    
+                    // Limpa mensagens anteriores
+                    document.getElementById('mensagemEdicao').className = 'message';
+                } else {
+                    alert('❌ Erro ao carregar dados do usuário: ' + data.erro);
+                }
+                
+            } catch (error) {
+                alert('❌ Erro ao conectar com a API: ' + error.message);
+                console.error('Erro:', error);
+            }
+        }
+        
+        function fecharModalEdicao() {
+            document.getElementById('modalEdicao').style.display = 'none';
+            document.getElementById('mensagemEdicao').className = 'message';
+            document.getElementById('edicaoForm').reset();
+        }
+        
+        // Fecha modal ao clicar fora dele
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalEdicao');
+            if (event.target === modal) {
+                fecharModalEdicao();
+            }
+        }
+        
+        document.getElementById('edicaoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const id = document.getElementById('editId').value;
+            const nome = document.getElementById('editNome').value.trim();
+            const dataNascimento = document.getElementById('editDataNascimento').value;
+            
+            if (!nome || !dataNascimento) {
+                mostrarMensagem('mensagemEdicao', 'Por favor, preencha todos os campos!', 'error');
+                return;
+            }
+            
+            const btnSalvar = document.querySelector('#edicaoForm button[type="submit"]');
+            btnSalvar.disabled = true;
+            btnSalvar.textContent = 'Salvando...';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/usuarios/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nome: nome,
+                        dataNascimento: dataNascimento
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    mostrarMensagem('mensagemEdicao', 
+                        `✅ ${data.mensagem}`, 
+                        'success'
+                    );
+                    
+                    // Atualiza as listas se estão visíveis
+                    carregarUsuarios();
+                    
+                    // Fecha o modal após 2 segundos
+                    setTimeout(() => {
+                        fecharModalEdicao();
+                    }, 2000);
+                } else {
+                    mostrarMensagem('mensagemEdicao', `❌ Erro: ${data.erro}`, 'error');
+                }
+                
+            } catch (error) {
+                mostrarMensagem('mensagemEdicao', `❌ Erro ao conectar com a API: ${error.message}`, 'error');
+                console.error('Erro:', error);
+            } finally {
+                btnSalvar.disabled = false;
+                btnSalvar.textContent = '💾 Salvar Alterações';
+            }
+        });
+        
+        // ========================================
+        // EXCLUSÃO DE USUÁRIOS
+        // ========================================
+        
+        async function deletarUsuario(id, nome) {
+            if (!confirm(`Tem certeza que deseja excluir o usuário "${nome}"?\n\nEsta ação não pode ser desfeita.`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/usuarios/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert(`✅ Usuário "${nome}" excluído com sucesso!`);
+                    carregarUsuarios();
+                    carregarDashboard();
+                } else {
+                    alert(`❌ Erro ao excluir usuário: ${data.erro}`);
+                }
+                
+            } catch (error) {
+                alert(`❌ Erro ao conectar com a API: ${error.message}`);
+                console.error('Erro:', error);
+            }
+        }
+        
+        // ========================================
+        // UTILITÁRIOS
+        // ========================================
+        
+        function mostrarMensagem(elementId, texto, tipo) {
+            const messageDiv = document.getElementById(elementId);
+            messageDiv.textContent = texto;
+            messageDiv.className = `message ${tipo}`;
+            
+            // Remove a mensagem após 5 segundos (exceto se for sucesso em modal)
+            if (elementId !== 'mensagemEdicao' || tipo !== 'success') {
+                setTimeout(() => {
+                    messageDiv.className = 'message';
+                }, 5000);
+            }
+        }
+        
+        function formatarData(dataString) {
+            const data = new Date(dataString + 'T00:00:00');
+            return data.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+        
+        function exportarUsuarios() {
+            fetch(`${API_BASE_URL}/usuarios`)
+                .then(response => response.json())
+                .then(data => {
+                    const blob = new Blob([JSON.stringify(data.usuarios, null, 2)], {
+                        type: 'application/json'
+                    });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'usuarios_' + new Date().toISOString().split('T')[0] + '.json';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    alert('❌ Erro ao exportar dados: ' + error.message);
+                });
+        }
+        
+        // ========================================
+        // INICIALIZAÇÃO
+        // ========================================
+        
+        // Carrega o dashboard ao iniciar
+        carregarDashboard();
+        
+        // Inicializa a consulta
+        toggleConsulta();
+    </script>
+</body>
+</html>
