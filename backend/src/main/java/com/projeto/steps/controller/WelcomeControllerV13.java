@@ -224,13 +224,13 @@ public class WelcomeControllerV13 {
                     Map<String, Object> resposta = new HashMap<>();
                     resposta.put("usuario", usuario);
                     resposta.put("timestamp", java.time.LocalDateTime.now());
-                    return ResponseEntity.ok(resposta);
+                    return ResponseEntity.ok((Object) resposta);
                 })
                 .orElseGet(() -> {
-                    Map<String, String> erro = new HashMap<>();
+                    Map<String, Object> erro = new HashMap<>();
                     erro.put("erro", "Usuário não encontrado");
                     erro.put("id", id);
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body((Object) erro);
                 });
                 
         } catch (Exception e) {
